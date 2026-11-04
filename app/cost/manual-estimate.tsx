@@ -23,7 +23,7 @@ export default function ManualEstimate({ appliance, tariff }: {
         type="number" min="0" step="any" inputMode="decimal" value={input}
         aria-describedby="spare-solar-hint" aria-invalid={!valid}
         onChange={(event) => setInput(event.currentTarget.value)} />
-      <output htmlFor="spare-solar" className="block">
+      <output htmlFor="spare-solar" className="block" aria-live="polite">
         {estimate === undefined ? "Enter a number of 0 or higher." :
           "Estimated cost · Rs " + Math.round(estimate) + " per cycle"}
       </output>
