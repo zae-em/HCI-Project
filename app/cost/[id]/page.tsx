@@ -58,6 +58,8 @@ export default async function CostPage({ params, searchParams }: {
     .lt("recorded_at", iso(endOfQuery)).order("recorded_at").returns<Reading[]>();
 
   const samples = readings.data ?? [];
+  // Wizard-of-Oz: ?demo=stale/missing/empty only simulate a bad feed for the walkthrough
+  // (older cutoff, hidden row, empty range). The age and staleMinutes check below is real.
   const cutoff = demo === "stale" ? now - 45 * 60_000 : now;
   const latest = samples.findLast((row) => {
     const stamp = Date.parse(row.recorded_at);
