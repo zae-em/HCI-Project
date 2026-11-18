@@ -1,15 +1,22 @@
 import Link from "next/link";
 import { database, householdId } from "../lib/database";
 import type { Appliance } from "../lib/cost";
+import AfterBanner from "./after/banner";
+import AfterHome from "./after/home";
 
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
+export default async function Home({ searchParams }: { searchParams: Promise<{ v?: string }> }) {
+  const { v } = await searchParams;
   const db = database();
   const { data, error } = await db.from("appliances")
     .select("id, name, power_kw, minutes").eq("household_id", householdId).order("name")
     .returns<Appliance[]>();
   if (error) throw new Error(error.message);
+
+  if (v === "after") {
+    return (<><AfterBanner beforeHref="/" /><AfterHome appliances={data} /></>);
+  }
 
   return (
     <>
