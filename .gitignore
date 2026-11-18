@@ -5,3 +5,5 @@ node_modules/
 *.tsbuildinfo
 supabase/.temp/
 supabase/.branches/
+
+.vercel/

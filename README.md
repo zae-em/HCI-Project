@@ -32,3 +32,13 @@ Open http://localhost:3000. The Supabase CLI applies the schema migration and se
 Supabase stores both days of simulated solar and home demand, the appliance power and cycle duration, and the household's example import and export rates. The replay clock is fixed. Future samples for the replay day serve as the forecast. The stored tariffs are demo inputs and can be edited in Supabase.
 
 In lib/cost.ts, the app subtracts existing home demand from solar generation to find spare solar. It calculates how much appliance power still comes from the grid, multiplies by cycle hours, then applies the stored import rate. The now estimate holds the latest reading constant for the cycle. The after-sunset estimate assumes grid power only. The later-window calculation checks each possible 15-minute start and prices the full cycle across the forecast samples. The export rate is displayed separately.
+
+## Hosted database recovery
+
+The deployed app uses the hosted WattWorth Supabase project. Free projects can pause after a period of low activity. If the app reports that household data is unavailable, open the project in Supabase and check its status.
+
+For a paused project, select Resume project and wait until it is healthy. Then select Try again in WattWorth. Resuming restores the existing database and data. A GitHub push or Vercel redeployment does not resume Supabase.
+
+Database requests time out after 10 seconds so an unavailable service reaches the recovery screen. The retry button requests the route again using Next.js's error-boundary retry callback.
+
+Supabase documents pausing and restoration at https://supabase.com/docs/guides/platform/free-project-pausing.

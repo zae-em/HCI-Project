@@ -8,6 +8,14 @@ export function database() {
   if (!url || !key) throw new Error("Supabase connection is missing.");
   return createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
-    global: { fetch: (input, init) => fetch(input, { ...init, cache: "no-store" }) },
+    global: {
+      fetch: (input, init) => fetch(input, {
+        ...init,
+        cache: "no-store",
+        signal: init?.signal
+          ? AbortSignal.any([init.signal, AbortSignal.timeout(10_000)])
+          : AbortSignal.timeout(10_000),
+      }),
+    },
   });
 }
