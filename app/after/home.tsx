@@ -69,8 +69,8 @@ export default function AfterHome({ appliances }: { appliances: Appliance[] }) {
         </ul>
       )}
 
-      <section className="card space-y-3" aria-labelledby="add-heading">
-        <h2 id="add-heading" className="font-bold">Add an appliance</h2>
+      <section className="card space-y-3" aria-label="Add an appliance">
+        {open && <h2 id="add-heading" className="font-bold">Add an appliance</h2>}
         {!open && (
           <button type="button" className="button" aria-expanded={false}
             onClick={() => { setOpen(true); setNotice(""); }}>
