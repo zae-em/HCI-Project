@@ -29,5 +29,13 @@ More: [`/changes`](before-after/05-changes.png), [AC page After with the stale r
 
 ## Checks run
 
-- Type check (`tsc`) and `next build` pass. There is no lint script in this repo, so lint was not run.
-- In a browser: Before screens are unchanged apart from the new "See what changed after tree testing" button on the home page. Every After nav item scrolls to its section or shows "Not built in this demo". `v=after` is kept through the plan form and the demo reading links.
+- Type check (`tsc`), `next build` and `npm test` pass. There is no lint script in this repo, so lint was not run.
+- In a browser: Before screens are unchanged apart from the new "See what changed after tree testing" button on the home page. Each After nav item lands on a visible, labeled section. `v=after` is kept through the plan form and the demo reading links.
+- `/changes` checked at 1280 px and 390 px wide: no sideways scroll. On phones each row stacks as a card instead of a table. See [desktop](before-after/08-changes-desktop.png) and [phone](before-after/08-changes-phone.png).
+- Console on `/`, `/?v=after`, `/cost/ac`, `/cost/ac?v=after` and `/changes`: no errors except a 404 for `/favicon.ico`, because the app has no favicon.
+
+## Demo polish changes
+
+- After AC page: added a labeled "Usage & Costs" section showing the existing solar, home use and grid draw readings. The menu item Usage & Costs jumps to it. No new data or logic.
+- Menu wording: only My Appliances is its own screen. Usage & Costs, Net Billing and Recommendations open sections of the appliance page. The home menu and `/changes` now say this.
+- Next.js upgraded from 16.4.4 to 16.4.6 (same minor, security patch). Build, type check and tests still pass.
