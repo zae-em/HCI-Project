@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { bestSolarWindow, estimateCost, estimateCycleAt, staleMinutes } from "../../../lib/cost";
 import type { Appliance, Reading, Tariff } from "../../../lib/cost";
 import { database, householdId } from "../../../lib/database";
+import AfterBanner from "../../after/banner";
+import AfterNav from "../../after/nav";
 import FamilyShare from "../share";
 import ManualEstimate from "../manual-estimate";
 
@@ -22,9 +24,11 @@ function money(amount: number) {
 
 export default async function CostPage({ params, searchParams }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ demo?: string; minutes?: string; start?: string }>;
+  searchParams: Promise<{ demo?: string; minutes?: string; start?: string; v?: string }>;
 }) {
-  const [{ id }, { demo, minutes, start }] = await Promise.all([params, searchParams]);
+  const [{ id }, { demo, minutes, start, v }] = await Promise.all([params, searchParams]);
+  const after = v === "after";
+  const keepV = after ? "?v=after" : "";
   const db = database();
   const [appliances, tariffs, households] = await Promise.all([
     db.from("appliances").select("id, name, power_kw, minutes")
@@ -103,7 +107,13 @@ export default async function CostPage({ params, searchParams }: {
 
   return (
     <>
-      <Link className="action-link" href="/">← All appliances</Link>
+      {after && (
+        <>
+          <AfterBanner beforeHref={"/cost/" + id} />
+          <AfterNav onAcPage />
+        </>
+      )}
+      <Link className="action-link" href={after ? "/?v=after" : "/"}>← All appliances</Link>
       <div className="space-y-1">
         <h1 className="text-2xl font-bold">{appliance.name}</h1>
         <p>{appliance.minutes} min cycle · {appliance.power_kw} kW</p>
@@ -152,7 +162,7 @@ export default async function CostPage({ params, searchParams }: {
               {" · "}{money(estimateCost(appliance, tariff, previous))} using yesterday’s solar at this time.</p>
           )}
           <ManualEstimate appliance={appliance} tariff={tariff} />
-          <a className="button" href={"/cost/" + id}>Check again</a>
+          <a className="button" href={"/cost/" + id + keepV}>Check again</a>
         </section>
       )}
 
@@ -161,6 +171,7 @@ export default async function CostPage({ params, searchParams }: {
         <p>Change how long it runs, or compare a start time from today’s replay.</p>
         <form action={"/cost/" + id} method="get" className="space-y-3">
           {demo && <input type="hidden" name="demo" value={demo} />}
+          {after && <input type="hidden" name="v" value="after" />}
           <div className="space-y-1">
             <label className="block font-semibold" htmlFor="cycle-minutes">Cycle length in minutes</label>
             <input className="min-h-12 w-full rounded-xl border border-stone-600 px-3"
@@ -210,10 +221,10 @@ export default async function CostPage({ params, searchParams }: {
       <details className="card text-sm">
         <summary className="flex min-h-12 cursor-pointer items-center font-semibold">Demo reading states</summary>
         <div className="flex flex-wrap gap-x-4">
-          <Link className="action-link" href={"/cost/" + id}>Fresh</Link>
-          <Link className="action-link" href={"?demo=stale"}>Stale</Link>
-          <Link className="action-link" href={"?demo=missing"}>Missing</Link>
-          <Link className="action-link" href={"?demo=empty"}>Empty</Link>
+          <Link className="action-link" href={"/cost/" + id + keepV}>Fresh</Link>
+          <Link className="action-link" href={after ? "?v=after&demo=stale" : "?demo=stale"}>Stale</Link>
+          <Link className="action-link" href={after ? "?v=after&demo=missing" : "?demo=missing"}>Missing</Link>
+          <Link className="action-link" href={after ? "?v=after&demo=empty" : "?demo=empty"}>Empty</Link>
         </div>
       </details>
     </>
