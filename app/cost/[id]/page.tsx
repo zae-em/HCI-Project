@@ -87,7 +87,9 @@ export default async function CostPage({ params, searchParams }: {
     : undefined;
   const bestStart = best ? time.format(best.start) : "";
   const bestEnd = best ? time.format(best.end) : "";
-  const name = appliance.name.toLowerCase();
+  // After: keep acronyms like AC in capitals ("Start the AC at ...").
+  const isAcronym = after && appliance.name === appliance.name.toUpperCase();
+  const name = isAcronym ? appliance.name : appliance.name.toLowerCase();
   const savedNow = nowCost === undefined ? 0 : Math.round(gridCost - nowCost);
   const summary = best && nowCost !== undefined && nowCost - best.cost >= 1
     ? "Start the " + name + " at " + bestStart + ". It could save about " +
