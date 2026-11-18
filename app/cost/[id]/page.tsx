@@ -122,7 +122,7 @@ export default async function CostPage({ params, searchParams }: {
 
       {live && nowCost !== undefined ? (
         <>
-          <section aria-label="Compare estimated costs" className="grid grid-cols-2 gap-3">
+          <section id={after ? "usage-costs" : undefined} aria-label="Compare estimated costs" className="grid grid-cols-2 gap-3">
             <div className="card space-y-1">
               <h2 className="font-semibold">Run now</h2>
               <p className="text-2xl font-bold">{money(nowCost)}</p>
@@ -132,8 +132,8 @@ export default async function CostPage({ params, searchParams }: {
               <p className="text-2xl font-bold">{money(gridCost)}</p>
             </div>
           </section>
-          <section className="card space-y-2">
-            <h2 className="eyebrow">Best later window today</h2>
+          <section id={after ? "best-time" : undefined} className="card space-y-2">
+            <h2 className="eyebrow">{after ? "Best time to run" : "Best later window today"}</h2>
             {best ? (
               <>
                 <p className="text-2xl font-bold">{bestStart} – {bestEnd}</p>
@@ -149,7 +149,7 @@ export default async function CostPage({ params, searchParams }: {
           </p>
         </>
       ) : (
-        <section className="card space-y-3" aria-labelledby="reading-state">
+        <section id={after ? "usage-costs" : undefined} className="card space-y-3" aria-labelledby="reading-state">
           <h2 id="reading-state" className="text-2xl font-bold">
             {readings.error ? "Couldn’t load solar readings" :
               samples.length === 0 ? "No solar readings yet" :
@@ -163,6 +163,12 @@ export default async function CostPage({ params, searchParams }: {
           )}
           <ManualEstimate appliance={appliance} tariff={tariff} />
           <a className="button" href={"/cost/" + id + keepV}>Check again</a>
+        </section>
+      )}
+      {after && !(live && nowCost !== undefined) && (
+        <section id="best-time" className="card space-y-2">
+          <h2 className="eyebrow">Best time to run</h2>
+          <p>Time-of-day advice needs a recent solar reading.</p>
         </section>
       )}
 
