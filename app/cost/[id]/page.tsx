@@ -124,7 +124,20 @@ export default async function CostPage({ params, searchParams }: {
 
       {live && nowCost !== undefined ? (
         <>
-          <section id={after ? "usage-costs" : undefined} aria-label="Compare estimated costs" className="grid grid-cols-2 gap-3">
+          {after && (
+            <section id="usage-costs" className="card space-y-2" aria-labelledby="usage-costs-heading">
+              <h2 id="usage-costs-heading" className="eyebrow">Usage &amp; Costs</h2>
+              <dl className="grid grid-cols-3 gap-3">
+                <div><dt className="text-sm">Solar</dt><dd className="text-xl font-bold">{live.solar_kw} kW</dd></div>
+                <div><dt className="text-sm">Home use</dt><dd className="text-xl font-bold">{live.home_load_kw} kW</dd></div>
+                <div><dt className="text-sm">Grid draw</dt><dd className="text-xl font-bold">{live.grid_import_kw} kW</dd></div>
+              </dl>
+              <p className="text-sm">
+                Updated {age === 0 ? "just now" : age + (age === 1 ? " minute ago" : " minutes ago")} in the replay.
+              </p>
+            </section>
+          )}
+          <section aria-label="Compare estimated costs" className="grid grid-cols-2 gap-3">
             <div className="card space-y-1">
               <h2 className="font-semibold">Run now</h2>
               <p className="text-2xl font-bold">{money(nowCost)}</p>
@@ -144,14 +157,19 @@ export default async function CostPage({ params, searchParams }: {
             ) : <p>No later solar window in today’s readings.</p>}
             <p className="font-semibold">{summary}</p>
           </section>
-          <p className="text-sm">
-            Updated {age === 0 ? "just now" : age + (age === 1 ? " minute ago" : " minutes ago")} in the replay.
-            {" "}Solar {live.solar_kw} kW · home use {live.home_load_kw} kW · grid draw {live.grid_import_kw} kW.
-            {" "}The run-now estimate assumes this reading holds for the cycle.
-          </p>
+          {after ? (
+            <p className="text-sm">The run-now estimate assumes this reading holds for the cycle.</p>
+          ) : (
+            <p className="text-sm">
+              Updated {age === 0 ? "just now" : age + (age === 1 ? " minute ago" : " minutes ago")} in the replay.
+              {" "}Solar {live.solar_kw} kW · home use {live.home_load_kw} kW · grid draw {live.grid_import_kw} kW.
+              {" "}The run-now estimate assumes this reading holds for the cycle.
+            </p>
+          )}
         </>
       ) : (
         <section id={after ? "usage-costs" : undefined} className="card space-y-3" aria-labelledby="reading-state">
+          {after && <p className="eyebrow">Usage &amp; Costs</p>}
           <h2 id="reading-state" className="text-2xl font-bold">
             {readings.error ? "Couldn’t load solar readings" :
               samples.length === 0 ? "No solar readings yet" :
