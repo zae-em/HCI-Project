@@ -217,13 +217,25 @@ export default async function CostPage({ params, searchParams }: {
 
       <FamilyShare key={familySummary} summary={familySummary} />
 
-      <p className="text-sm">
-        Demo import {money(tariff.import_rate)}/kWh · export credit {money(tariff.export_rate)}/kWh.
-        Export credit is shown separately from appliance cost.
-        {live && live.grid_export_kw > 0 && (
-          <> At the current export of {live.grid_export_kw} kW, the credit is about {money(live.grid_export_kw * tariff.export_rate)} per hour.</>
-        )}
-      </p>
+      {after ? (
+        <section id="net-billing" className="card space-y-2" aria-labelledby="net-billing-heading">
+          <p className="eyebrow">Net Billing</p>
+          <h2 id="net-billing-heading" className="font-bold">Units sent back</h2>
+          <p>Demo import {money(tariff.import_rate)}/kWh · units sent back {money(tariff.export_rate)}/kWh.</p>
+          <p>Units sent back are shown separately from appliance cost.</p>
+          {live && live.grid_export_kw > 0 && (
+            <p>At the current {live.grid_export_kw} kW sent back, that is worth about {money(live.grid_export_kw * tariff.export_rate)} per hour.</p>
+          )}
+        </section>
+      ) : (
+        <p className="text-sm">
+          Demo import {money(tariff.import_rate)}/kWh · export credit {money(tariff.export_rate)}/kWh.
+          Export credit is shown separately from appliance cost.
+          {live && live.grid_export_kw > 0 && (
+            <> At the current export of {live.grid_export_kw} kW, the credit is about {money(live.grid_export_kw * tariff.export_rate)} per hour.</>
+          )}
+        </p>
+      )}
       <details className="card text-sm">
         <summary className="flex min-h-12 cursor-pointer items-center font-semibold">Demo reading states</summary>
         <div className="flex flex-wrap gap-x-4">
