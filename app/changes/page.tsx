@@ -48,9 +48,9 @@ export default function Changes() {
         <div className="card p-0">
           <table className="w-full table-fixed text-left text-sm">
             <colgroup>
-              <col className="w-[36%]" />
-              <col className="w-[24%]" />
-              <col className="w-[40%]" />
+              <col className="w-[34%]" />
+              <col className="w-[29%]" />
+              <col className="w-[37%]" />
             </colgroup>
             <thead>
               <tr className="border-b border-stone-400">
