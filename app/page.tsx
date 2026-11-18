@@ -42,6 +42,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ v
           ))}
         </ul>
       )}
+      <Link className="button mt-6" href="/changes">
+        See what changed after tree testing <span aria-hidden="true">→</span>
+      </Link>
     </>
   );
 }
