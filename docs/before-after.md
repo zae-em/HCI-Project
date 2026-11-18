@@ -29,5 +29,5 @@ More: [`/changes`](before-after/05-changes.png), [AC page After with the stale r
 
 ## Checks run
 
-- Type check (`tsc --noEmit`) and `next build` pass. There is no lint script in this repo, so lint was not run.
+- Type check (`tsc`) and `next build` pass. There is no lint script in this repo, so lint was not run.
 - In a browser: Before screens are unchanged apart from the new "See what changed after tree testing" button on the home page. Every After nav item scrolls to its section or shows "Not built in this demo". `v=after` is kept through the plan form and the demo reading links.
