@@ -45,21 +45,26 @@ export default function Changes() {
       <VersionToggle />
       <section aria-labelledby="table-heading" className="space-y-2">
         <h2 id="table-heading" className="font-bold">Changes</h2>
-        <div className="card overflow-x-auto p-0">
-          <table className="w-full min-w-[36rem] text-left text-sm">
+        <div className="card p-0">
+          <table className="w-full table-fixed text-left text-sm">
+            <colgroup>
+              <col className="w-[36%]" />
+              <col className="w-[24%]" />
+              <col className="w-[40%]" />
+            </colgroup>
             <thead>
               <tr className="border-b border-stone-400">
-                <th scope="col" className="p-3">Change</th>
-                <th scope="col" className="p-3">Label we tested</th>
-                <th scope="col" className="p-3">Finding</th>
+                <th scope="col" className="p-2">Change</th>
+                <th scope="col" className="p-2">Label we tested</th>
+                <th scope="col" className="p-2">Finding</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((row) => (
                 <tr key={row.change} className="border-b border-stone-300 align-top last:border-0">
-                  <td className="p-3">{row.change}</td>
-                  <td className="p-3">{row.label}</td>
-                  <td className="p-3">{row.finding}</td>
+                  <td className="p-2 break-words">{row.change}</td>
+                  <td className="p-2 break-words">{row.label}</td>
+                  <td className="p-2 break-words">{row.finding}</td>
                 </tr>
               ))}
             </tbody>
