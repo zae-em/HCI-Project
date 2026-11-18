@@ -52,7 +52,7 @@ export default function AfterHome({ appliances }: { appliances: Appliance[] }) {
                 <div className="card space-y-1">
                   <span className="block font-bold">{appliance.name}</span>
                   <span className="block text-sm">{appliance.minutes} min cycle · {appliance.power_kw} kW</span>
-                  <span className="block text-sm">Added this session. Not built in this demo: no cost page yet.</span>
+                  <span className="block text-sm">Added this session. It has no cost page in this demo.</span>
                 </div>
               ) : (
                 <Link className="card flex min-h-16 items-center justify-between gap-4 hover:bg-stone-200"

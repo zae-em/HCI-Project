@@ -10,7 +10,7 @@ Open After by adding `?v=after` to `/` or `/cost/ac`. The page `/changes` explai
 
 | Change | Reason | Finding |
 | - | - | - |
-| Added a small menu: My Appliances, Usage & Costs, Net Billing, Recommendations. Items with no screen say "Not built in this demo". | The current app had no menu, only "← All appliances". Tree A, the clear menu, was the one we tested. | The current app had no menu. Tree A was the clear menu in the test. |
+| Added a small menu: My Appliances, Usage & Costs, Net Billing, Recommendations. Only My Appliances is its own screen. The other three jump to sections of the appliance page. | The current app had no menu, only "← All appliances". Tree A, the clear menu, was the one we tested. | The current app had no menu. Tree A was the clear menu in the test. |
 | Added an "Add an appliance" card and a simple form on the home page. The new item is held in local state only. | Testers could find this under My Appliances in Tree A. | T3 "add an appliance": 100% on Tree A, 0% on the generic Tree B. |
 | Replaced "export credit" with "units sent back", in its own card under Net Billing. | The task said "units sent back". The app said "export credit". | T2 "units sent back to the grid": 50% even on Tree A. |
 | Renamed "Best later window today" to "Best time to run" and made it the one place for time-of-day advice. Recommendations jumps to it. | Time-of-day advice was looked for in two places. | T4 "AC costs more than it should, would another time of day help": 50% on Tree A. One tester went to Recommendations and found it, the other stopped at Usage & Costs. |

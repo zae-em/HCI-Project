@@ -39,13 +39,16 @@ export default function AfterNav({ acId, onAcPage = false, current }: {
               </Link>
             ) : (
               <button type="button" className={chip + " bg-white hover:bg-stone-200"}
-                onClick={() => setMessage(item.label + ": Not built in this demo.")}>
+                onClick={() => setMessage(item.label + " is a section of an appliance page. Open an appliance first.")}>
                 {item.label}
               </button>
             )}
           </li>
         ))}
       </ul>
+      {!onAcPage && (
+        <p className="text-sm">Usage &amp; Costs, Net Billing and Recommendations open sections of an appliance page.</p>
+      )}
       <p className="text-sm" role="status" hidden={!message}>{message}</p>
     </nav>
   );

@@ -5,7 +5,7 @@ export const metadata = { title: "What changed | WattWorth" };
 
 const rows = [
   {
-    change: "Added a small menu: My Appliances, Usage & Costs, Net Billing, Recommendations. Items with no screen say \"Not built in this demo\".",
+    change: "Added a small menu: My Appliances, Usage & Costs, Net Billing, Recommendations. Only My Appliances is its own screen. The other three jump to sections of the appliance page.",
     label: "Tree A menu labels",
     finding: "The current app had no menu, only \"← All appliances\". Tree A, the clear menu, was the one we tested.",
   },
