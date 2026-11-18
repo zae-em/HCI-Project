@@ -45,7 +45,16 @@ export default function Changes() {
       <VersionToggle />
       <section aria-labelledby="table-heading" className="space-y-2">
         <h2 id="table-heading" className="font-bold">Changes</h2>
-        <div className="card p-0">
+        <ul className="space-y-3 sm:hidden" aria-label="Changes">
+          {rows.map((row) => (
+            <li key={row.change} className="card space-y-2 text-sm">
+              <p><span className="block font-semibold">Change</span>{row.change}</p>
+              <p><span className="block font-semibold">Label we tested</span>{row.label}</p>
+              <p><span className="block font-semibold">Finding</span>{row.finding}</p>
+            </li>
+          ))}
+        </ul>
+        <div className="card hidden p-0 sm:block">
           <table className="w-full table-fixed text-left text-sm">
             <colgroup>
               <col className="w-[34%]" />
