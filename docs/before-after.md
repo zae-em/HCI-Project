@@ -1,3 +1,5 @@
+> The app now ships only the After version. The Before version now lives only at the tag `before-tree-testing`.
+
 # Before and After tree testing
 
 Two versions of the same app. Before is the app as it was (tag `before-tree-testing`). After is the branch `after-tree-testing`.

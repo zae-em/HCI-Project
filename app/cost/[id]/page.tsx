@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import { bestSolarWindow, estimateCost, estimateCycleAt, staleMinutes } from "../../../lib/cost";
 import type { Appliance, Reading, Tariff } from "../../../lib/cost";
 import { database, householdId } from "../../../lib/database";
-import AfterBanner from "../../after/banner";
-import AfterNav from "../../after/nav";
+import MainNav from "../../components/main-nav";
 import FamilyShare from "../share";
 import ManualEstimate from "../manual-estimate";
 
@@ -24,11 +23,10 @@ function money(amount: number) {
 
 export default async function CostPage({ params, searchParams }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ demo?: string; minutes?: string; start?: string; v?: string }>;
+  // Old shared links may still carry ?v=after. It is accepted and ignored.
+  searchParams: Promise<{ demo?: string; minutes?: string; start?: string }>;
 }) {
-  const [{ id }, { demo, minutes, start, v }] = await Promise.all([params, searchParams]);
-  const after = v === "after";
-  const keepV = after ? "?v=after" : "";
+  const [{ id }, { demo, minutes, start }] = await Promise.all([params, searchParams]);
   const db = database();
   const [appliances, tariffs, households] = await Promise.all([
     db.from("appliances").select("id, name, power_kw, minutes")
@@ -87,8 +85,8 @@ export default async function CostPage({ params, searchParams }: {
     : undefined;
   const bestStart = best ? time.format(best.start) : "";
   const bestEnd = best ? time.format(best.end) : "";
-  // After: keep acronyms like AC in capitals ("Start the AC at ...").
-  const isAcronym = after && appliance.name === appliance.name.toUpperCase();
+  // Keep acronyms like AC in capitals ("Start the AC at ...").
+  const isAcronym = appliance.name === appliance.name.toUpperCase();
   const name = isAcronym ? appliance.name : appliance.name.toLowerCase();
   const savedNow = nowCost === undefined ? 0 : Math.round(gridCost - nowCost);
   const summary = best && nowCost !== undefined && nowCost - best.cost >= 1
@@ -109,13 +107,8 @@ export default async function CostPage({ params, searchParams }: {
 
   return (
     <>
-      {after && (
-        <>
-          <AfterBanner beforeHref={"/cost/" + id} />
-          <AfterNav onAcPage />
-        </>
-      )}
-      <Link className="action-link" href={after ? "/?v=after" : "/"}>← All appliances</Link>
+      <MainNav onAcPage />
+      <Link className="action-link" href="/">← All appliances</Link>
       <div className="space-y-1">
         <h1 className="text-2xl font-bold">{appliance.name}</h1>
         <p>{appliance.minutes} min cycle · {appliance.power_kw} kW</p>
@@ -124,19 +117,17 @@ export default async function CostPage({ params, searchParams }: {
 
       {live && nowCost !== undefined ? (
         <>
-          {after && (
-            <section id="usage-costs" className="card space-y-2" aria-labelledby="usage-costs-heading">
-              <h2 id="usage-costs-heading" className="eyebrow">Usage &amp; Costs</h2>
-              <dl className="grid grid-cols-3 gap-3">
-                <div><dt className="text-sm">Solar</dt><dd className="text-xl font-bold">{live.solar_kw} kW</dd></div>
-                <div><dt className="text-sm">Home use</dt><dd className="text-xl font-bold">{live.home_load_kw} kW</dd></div>
-                <div><dt className="text-sm">Grid draw</dt><dd className="text-xl font-bold">{live.grid_import_kw} kW</dd></div>
-              </dl>
-              <p className="text-sm">
-                Updated {age === 0 ? "just now" : age + (age === 1 ? " minute ago" : " minutes ago")} in the replay.
-              </p>
-            </section>
-          )}
+          <section id="usage-costs" className="card space-y-2" aria-labelledby="usage-costs-heading">
+            <h2 id="usage-costs-heading" className="eyebrow">Usage &amp; Costs</h2>
+            <dl className="grid grid-cols-3 gap-3">
+              <div><dt className="text-sm">Solar</dt><dd className="text-xl font-bold">{live.solar_kw} kW</dd></div>
+              <div><dt className="text-sm">Home use</dt><dd className="text-xl font-bold">{live.home_load_kw} kW</dd></div>
+              <div><dt className="text-sm">Grid draw</dt><dd className="text-xl font-bold">{live.grid_import_kw} kW</dd></div>
+            </dl>
+            <p className="text-sm">
+              Updated {age === 0 ? "just now" : age + (age === 1 ? " minute ago" : " minutes ago")} in the replay.
+            </p>
+          </section>
           <section aria-label="Compare estimated costs" className="grid grid-cols-2 gap-3">
             <div className="card space-y-1">
               <h2 className="font-semibold">Run now</h2>
@@ -147,8 +138,8 @@ export default async function CostPage({ params, searchParams }: {
               <p className="text-2xl font-bold">{money(gridCost)}</p>
             </div>
           </section>
-          <section id={after ? "best-time" : undefined} className="card space-y-2">
-            <h2 className="eyebrow">{after ? "Best time to run" : "Best later window today"}</h2>
+          <section id="best-time" className="card space-y-2">
+            <h2 className="eyebrow">Best time to run</h2>
             {best ? (
               <>
                 <p className="text-2xl font-bold">{bestStart} – {bestEnd}</p>
@@ -157,19 +148,11 @@ export default async function CostPage({ params, searchParams }: {
             ) : <p>No later solar window in today’s readings.</p>}
             <p className="font-semibold">{summary}</p>
           </section>
-          {after ? (
-            <p className="text-sm">The run-now estimate assumes this reading holds for the cycle.</p>
-          ) : (
-            <p className="text-sm">
-              Updated {age === 0 ? "just now" : age + (age === 1 ? " minute ago" : " minutes ago")} in the replay.
-              {" "}Solar {live.solar_kw} kW · home use {live.home_load_kw} kW · grid draw {live.grid_import_kw} kW.
-              {" "}The run-now estimate assumes this reading holds for the cycle.
-            </p>
-          )}
+          <p className="text-sm">The run-now estimate assumes this reading holds for the cycle.</p>
         </>
       ) : (
-        <section id={after ? "usage-costs" : undefined} className="card space-y-3" aria-labelledby="reading-state">
-          {after && <p className="eyebrow">Usage &amp; Costs</p>}
+        <section id="usage-costs" className="card space-y-3" aria-labelledby="reading-state">
+          <p className="eyebrow">Usage &amp; Costs</p>
           <h2 id="reading-state" className="text-2xl font-bold">
             {readings.error ? "Couldn’t load solar readings" :
               samples.length === 0 ? "No solar readings yet" :
@@ -182,10 +165,10 @@ export default async function CostPage({ params, searchParams }: {
               {" · "}{money(estimateCost(appliance, tariff, previous))} using yesterday’s solar at this time.</p>
           )}
           <ManualEstimate appliance={appliance} tariff={tariff} />
-          <a className="button" href={"/cost/" + id + keepV}>Check again</a>
+          <a className="button" href={"/cost/" + id}>Check again</a>
         </section>
       )}
-      {after && !(live && nowCost !== undefined) && (
+      {!(live && nowCost !== undefined) && (
         <section id="best-time" className="card space-y-2">
           <h2 className="eyebrow">Best time to run</h2>
           <p>Time-of-day advice needs a recent solar reading.</p>
@@ -197,7 +180,6 @@ export default async function CostPage({ params, searchParams }: {
         <p>Change how long it runs, or compare a start time from today’s replay.</p>
         <form action={"/cost/" + id} method="get" className="space-y-3">
           {demo && <input type="hidden" name="demo" value={demo} />}
-          {after && <input type="hidden" name="v" value="after" />}
           <div className="space-y-1">
             <label className="block font-semibold" htmlFor="cycle-minutes">Cycle length in minutes</label>
             <input className="min-h-12 w-full rounded-xl border border-stone-600 px-3"
@@ -237,32 +219,22 @@ export default async function CostPage({ params, searchParams }: {
 
       <FamilyShare key={familySummary} summary={familySummary} />
 
-      {after ? (
-        <section id="net-billing" className="card space-y-2" aria-labelledby="net-billing-heading">
-          <p className="eyebrow">Net Billing</p>
-          <h2 id="net-billing-heading" className="font-bold">Units sent back</h2>
-          <p>Demo import {money(tariff.import_rate)}/kWh · units sent back {money(tariff.export_rate)}/kWh.</p>
-          <p>Units sent back are shown separately from appliance cost.</p>
-          {live && live.grid_export_kw > 0 && (
-            <p>At the current {live.grid_export_kw} kW sent back, that is worth about {money(live.grid_export_kw * tariff.export_rate)} per hour.</p>
-          )}
-        </section>
-      ) : (
-        <p className="text-sm">
-          Demo import {money(tariff.import_rate)}/kWh · export credit {money(tariff.export_rate)}/kWh.
-          Export credit is shown separately from appliance cost.
-          {live && live.grid_export_kw > 0 && (
-            <> At the current export of {live.grid_export_kw} kW, the credit is about {money(live.grid_export_kw * tariff.export_rate)} per hour.</>
-          )}
-        </p>
-      )}
+      <section id="net-billing" className="card space-y-2" aria-labelledby="net-billing-heading">
+        <p className="eyebrow">Net Billing</p>
+        <h2 id="net-billing-heading" className="font-bold">Units sent back</h2>
+        <p>Demo import {money(tariff.import_rate)}/kWh · units sent back {money(tariff.export_rate)}/kWh.</p>
+        <p>Units sent back are shown separately from appliance cost.</p>
+        {live && live.grid_export_kw > 0 && (
+          <p>At the current {live.grid_export_kw} kW sent back, that is worth about {money(live.grid_export_kw * tariff.export_rate)} per hour.</p>
+        )}
+      </section>
       <details className="card text-sm">
         <summary className="flex min-h-12 cursor-pointer items-center font-semibold">Demo reading states</summary>
         <div className="flex flex-wrap gap-x-4">
-          <Link className="action-link" href={"/cost/" + id + keepV}>Fresh</Link>
-          <Link className="action-link" href={after ? "?v=after&demo=stale" : "?demo=stale"}>Stale</Link>
-          <Link className="action-link" href={after ? "?v=after&demo=missing" : "?demo=missing"}>Missing</Link>
-          <Link className="action-link" href={after ? "?v=after&demo=empty" : "?demo=empty"}>Empty</Link>
+          <Link className="action-link" href={"/cost/" + id}>Fresh</Link>
+          <Link className="action-link" href="?demo=stale">Stale</Link>
+          <Link className="action-link" href="?demo=missing">Missing</Link>
+          <Link className="action-link" href="?demo=empty">Empty</Link>
         </div>
       </details>
     </>
