@@ -22,10 +22,16 @@ Open http://localhost:3000. The Supabase CLI applies the schema migration and se
 
 ## Instructor walkthrough
 
+The home page, My Appliances, lists the demo appliances and has a menu. Usage & Costs, Net Billing and Recommendations open those sections of the AC page. Add an appliance keeps the new entry for the current session only.
+
 1. Choose Washing machine. The replay starts at 10:02 a.m. PKT with a 10:00 a.m. reading and a temporary household load spike.
-2. Compare Run now and After sunset, then read the suggested start and share the generated summary. On devices without native sharing, the button copies the text.
+2. Read the Usage & Costs readings, compare Run now and After sunset, then read the suggested start under Best time to run and share the generated summary. On devices without native sharing, the button copies the text.
 3. Expand Demo reading states. Stale selects an older reading and Missing hides today's reading. Both can show yesterday at the same time. Empty queries a range with no rows and shows the manual estimate, which starts at 0 kW of spare solar.
-4. Run npm test for the cost checks and npm run build for the production build.
+   The same states open directly by URL, for example /cost/washing-machine?demo=stale.
+4. Plan a cycle changes the cycle length or tries a later start. Net Billing, under Units sent back, shows the export rate separately from appliance cost.
+5. Run npm test for the cost checks and npm run build for the production build.
+
+Older links that end in ?v=after still work and show the same pages.
 
 ## What the prototype computes
 

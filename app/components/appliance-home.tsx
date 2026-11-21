@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { Appliance } from "../../lib/cost";
-import AfterNav from "./nav";
+import MainNav from "./main-nav";
 
 type Listed = Appliance & { added?: boolean };
 
-export default function AfterHome({ appliances }: { appliances: Appliance[] }) {
+export default function ApplianceHome({ appliances }: { appliances: Appliance[] }) {
   const [added, setAdded] = useState<Listed[]>([]);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
@@ -37,7 +37,7 @@ export default function AfterHome({ appliances }: { appliances: Appliance[] }) {
 
   return (
     <>
-      <AfterNav acId={acId} current="appliances" />
+      <MainNav acId={acId} current="appliances" />
       <div className="space-y-1">
         <h1 className="text-2xl font-bold">My Appliances</h1>
         <p>Pick an appliance to compare one cycle now and after sunset.</p>
@@ -56,7 +56,7 @@ export default function AfterHome({ appliances }: { appliances: Appliance[] }) {
                 </div>
               ) : (
                 <Link className="card flex min-h-16 items-center justify-between gap-4 hover:bg-stone-200"
-                  href={"/cost/" + appliance.id + "?v=after"}>
+                  href={"/cost/" + appliance.id}>
                   <span>
                     <span className="block font-bold">{appliance.name}</span>
                     <span className="text-sm">{appliance.minutes} min cycle · {appliance.power_kw} kW</span>

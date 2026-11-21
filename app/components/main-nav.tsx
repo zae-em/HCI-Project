@@ -5,7 +5,7 @@ import { useState } from "react";
 
 type Item = { label: string; href?: string; current?: boolean };
 
-export default function AfterNav({ acId, onAcPage = false, current }: {
+export default function MainNav({ acId, onAcPage = false, current }: {
   acId?: string;
   onAcPage?: boolean;
   current?: "appliances";
@@ -15,11 +15,11 @@ export default function AfterNav({ acId, onAcPage = false, current }: {
   // Sections live on the AC page. With no AC page to point at, say so instead of linking nowhere.
   function section(id: string) {
     if (onAcPage) return "#" + id;
-    return acId ? "/cost/" + acId + "?v=after#" + id : undefined;
+    return acId ? "/cost/" + acId + "#" + id : undefined;
   }
 
   const items: Item[] = [
-    { label: "My Appliances", href: "/?v=after", current: current === "appliances" },
+    { label: "My Appliances", href: "/", current: current === "appliances" },
     { label: "Usage & Costs", href: section("usage-costs") },
     { label: "Net Billing", href: section("net-billing") },
     { label: "Recommendations", href: section("best-time") },
